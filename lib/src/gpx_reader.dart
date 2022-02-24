@@ -1,3 +1,4 @@
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:xml/xml_events.dart';
 
 import 'model/bounds.dart';
@@ -39,9 +40,12 @@ class GpxReader {
     gpx.version = gpxTag.attributes
         .firstWhere((attr) => attr.name == GpxTagV11.version)
         .value;
-    gpx.creator = gpxTag.attributes
-        .firstWhere((attr) => attr.name == GpxTagV11.creator)
-        .value;
+
+    final creatorAttribute = gpxTag.attributes
+        .firstWhereOrNull((attr) => attr.name == GpxTagV11.creator);
+    if (creatorAttribute != null) {
+      gpx.creator = creatorAttribute.value;
+    }
 
     while (iterator.moveNext()) {
       final val = iterator.current;
